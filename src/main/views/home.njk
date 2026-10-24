@@ -1,0 +1,68 @@
+
+{% extends "template.njk" %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">My tasks</h1>
+
+  <p class="govuk-body">
+    <a href="/tasks/new" role="button" draggable="false" class="govuk-button">
+      Create task
+    </a>
+  </p>
+
+  {% if error %}
+    <p class="govuk-error-message">{{ error }}</p>
+  {% endif %}
+
+  {% if tasks and tasks.length > 0 %}
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">
+        All tasks
+      </caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Title</th>
+          <th scope="col" class="govuk-table__header">Description</th>
+          <th scope="col" class="govuk-table__header">Status</th>
+          <th scope="col" class="govuk-table__header">Due date</th>
+          <th scope="col" class="govuk-table__header">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for task in tasks %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ task.title }}</td>
+            <td class="govuk-table__cell">
+              {{ task.description or "—" }}
+            </td>
+             <td class="govuk-table__cell">
+              <form method="post" action="/tasks/{{ task.id }}/status" style="display: flex; align-items: center; gap: 10px;">
+                <select class="govuk-select" id="status-{{ task.id }}" name="status">
+                  <option value="TODO" {% if task.status == "TODO" %}selected{% endif %}>To do</option>
+                  <option value="IN_PROGRESS" {% if task.status == "IN_PROGRESS" %}selected{% endif %}>In progress</option>
+                  <option value="DONE" {% if task.status == "DONE" %}selected{% endif %}>Done</option>
+                </select>
+                <button class="govuk-button govuk-button--secondary" type="submit" style="margin-bottom: 0;">Update</button>
+              </form>
+            </td>
+            <td class="govuk-table__cell">
+              {{ task.formattedDueDate or "—" }}
+            </td>
+            <td class="govuk-table__cell">
+              <form method="post" action="/tasks/{{ task.id }}/delete">
+                <button
+                  class="govuk-button govuk-button--warning"
+                  type="submit"
+                >
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% elif not error %}
+    <p class="govuk-body">There are no tasks yet.</p>
+  {% endif %}
+{% endblock %}
