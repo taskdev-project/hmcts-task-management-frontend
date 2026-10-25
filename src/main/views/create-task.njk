@@ -22,6 +22,7 @@
         id="title"
         name="title"
         type="text"
+        value="{{ formData.title | default('') }}"
         required
       >
     </div>
@@ -33,15 +34,15 @@
         id="description"
         name="description"
         rows="3"
-      ></textarea>
+      >{{ formData.description | default('') }}</textarea>
     </div>
 
     <div class="govuk-form-group">
       <label class="govuk-label" for="status">Status</label>
       <select class="govuk-select" id="status" name="status">
-        <option value="TODO">To do</option>
-        <option value="IN_PROGRESS">In progress</option>
-        <option value="DONE">Done</option>
+        <option value="TODO" {% if not formData or formData.status == "TODO" %}selected{% endif %}>To do</option>
+        <option value="IN_PROGRESS" {% if formData.status == "IN_PROGRESS" %}selected{% endif %}>In progress</option>
+        <option value="DONE" {% if formData.status == "DONE" %}selected{% endif %}>Done</option>
       </select>
     </div>
 
@@ -52,6 +53,7 @@
         id="dueDate"
         name="dueDate"
         type="datetime-local"
+        value="{{ formData.dueDate | default('') }}"
         required
       >
     </div>

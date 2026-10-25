@@ -89,12 +89,12 @@ corepack yarn prettier --check src
 
 The frontend communicates with the following backend endpoints:
 
-| Operation | Method | Endpoint |
-|---|---|---|
-| Retrieve all tasks | GET | `/api/tasks` |
-| Create a task | POST | `/api/tasks` |
-| Update task status | PATCH | `/api/tasks/{id}/status` |
-| Delete a task | DELETE | `/api/tasks/{id}` |
+| Operation          | Method | Endpoint                 |
+| ------------------ | ------ | ------------------------ |
+| Retrieve all tasks | GET    | `/api/tasks`             |
+| Create a task      | POST   | `/api/tasks`             |
+| Update task status | PATCH  | `/api/tasks/{id}/status` |
+| Delete a task      | DELETE | `/api/tasks/{id}`        |
 
 The backend Swagger UI is available at:
 

@@ -1,6 +1,14 @@
 import axios from 'axios';
 import { Application } from 'express';
 
+type Task = {
+  id: number;
+  title: string;
+  description?: string | null;
+  status: 'TODO' | 'IN_PROGRESS' | 'DONE';
+  dueDate?: string | null;
+};
+
 export default function (app: Application): void {
   app.get('/tasks/new', (req, res) => {
     res.render('create-task');
@@ -38,6 +46,22 @@ export default function (app: Application): void {
       dueDate: req.body.dueDate,
     };
 
+    const dueDate = formData.dueDate;
+
+    if (dueDate) {
+      const parsedDueDate = new Date(dueDate);
+
+      if (
+        !Number.isNaN(parsedDueDate.getTime()) &&
+        parsedDueDate <= new Date()
+      ) {
+        return res.status(400).render('create-task', {
+          error: 'Due date must be in the future.',
+          formData,
+        });
+      }
+    }
+
     try {
       await axios.post('http://localhost:4000/api/tasks', formData);
       res.redirect('/');
@@ -58,9 +82,9 @@ export default function (app: Application): void {
 
   app.get('/', async (req, res) => {
     try {
-      const response = await axios.get('http://localhost:4000/api/tasks');
+      const response = await axios.get<Task[]>('http://localhost:4000/api/tasks');
 
-      const tasks = response.data.map((task: any) => ({
+      const tasks = response.data.map(task => ({
         ...task,
         formattedDueDate: task.dueDate
           ? new Date(task.dueDate).toLocaleString('en-GB', {
